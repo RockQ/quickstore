@@ -1,0 +1,65 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+// This is a mock product data array. In a real application, you'd fetch this data from a database or API.
+const products = [
+  {
+    id: 1,
+    name: "Hiking Backpack",
+    brand: "Patagonia",
+    price: 129.99,
+    image: "/images/hiking-backpack.jpg",
+  },
+  {
+    id: 2,
+    name: "Waterproof Jacket",
+    brand: "The North Face",
+    price: 199.99,
+    image: "/images/waterproof-jacket.jpg",
+  },
+  {
+    id: 3,
+    name: "Trekking Poles",
+    brand: "Columbia",
+    price: 79.99,
+    image: "/images/trekking-poles.jpg",
+  },
+  // Add more products as needed
+];
+
+// Get the brand filter from the URL query parameter
+const { brand } = Astro.url.searchParams;
+
+// Filter products by brand if a brand parameter is provided
+const filteredProducts = brand
+  ? products.filter((product) => product.brand.toLowerCase() === brand.toLowerCase())
+  : products;
+---
+
+<BaseLayout>
+  <main class="py-20 bg-charcoal-500">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl font-bold text-white mb-12 text-center">
+        {brand ? `${brand} Products` : "All Products"}
+      </h1>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {filteredProducts.map((product) => (
+          <div class="bg-charcoal-600 p-6 rounded-lg shadow-md">
+            <img src={product.image} alt={product.name} class="w-full h-48 object-cover mb-4 rounded" />
+            <h2 class="text-2xl font-semibold text-negroni-500 mb-2">{product.name}</h2>
+            <p class="text-white mb-2">Brand: {product.brand}</p>
+            <p class="text-white mb-4">Price: ${product.price.toFixed(2)}</p>
+            <button class="bg-negroni-500 text-charcoal-700 px-4 py-2 rounded hover:bg-negroni-600 transition-colors">
+              Add to Cart
+            </button>
+          </div>
+        ))}
+      </div>
+      
+      {filteredProducts.length === 0 && (
+        <p class="text-white text-center text-xl mt-8">No products found for this brand.</p>
+      )}
+    </div>
+  </main>
+</BaseLayout>
